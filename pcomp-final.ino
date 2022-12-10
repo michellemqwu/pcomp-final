@@ -3,10 +3,10 @@
 #include <FastLED.h>
 
 #define TCAADDR 0x70
-#define LED_PIN 2
-#define NUM_LEDS 100
+#define NUM_STRIPS 2
+#define NUM_LEDS_PER_STRIP 60
 
-CRGB leds[NUM_LEDS];
+CRGB leds[NUM_STRIPS][NUM_LEDS_PER_STRIP];
 
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_4X);
 Adafruit_TCS34725 tcs1 = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_4X);
@@ -17,10 +17,8 @@ void setup() {
   Wire.begin();
   Serial.begin(9600);
 
-  FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS);
-  FastLED.setMaxPowerInVoltsAndMilliamps(5, 500);
-  FastLED.clear();
-  FastLED.show();
+  FastLED.addLeds<WS2812, 2, GRB>(leds[0], 13);
+  FastLED.addLeds<WS2812, 3, GRB>(leds[1], 11);
 
   for (int i = 0; i < 256; i++) {
     float x = i;
@@ -48,11 +46,16 @@ void loop() {
   Serial.print("\tG:\t"); Serial.print(gammatable[(int)green1]);
   Serial.print("\tB:\t"); Serial.println(gammatable[(int)blue1]);
 
-  for (int i = 0; i < NUM_LEDS; i++) {
-    if (i % 2 == 0) {
-      leds[i] = CRGB(gammatable[(int)red], gammatable[(int)green], gammatable[(int)blue]);
-    } else {
-      leds[i] = CRGB(gammatable[(int)red1], gammatable[(int)green1], gammatable[(int)blue1]);
+  for (int i = 0; i < NUM_STRIPS; i++) {
+    if (i == 0) {
+      for (int x = 0; x < 13; x++) {
+        leds[i][x] = CRGB(gammatable[(int)red], gammatable[(int)green], gammatable[(int)blue]);
+      }
+    }
+    if (i == 1) {
+      for (int y = 0; y < 11; y++) {
+        leds[i][y] = CRGB(gammatable[(int)red1], gammatable[(int)green1], gammatable[(int)blue1]);
+      }
     }
     FastLED.setBrightness(6 * i);
     FastLED.show();
