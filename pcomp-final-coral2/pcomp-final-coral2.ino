@@ -5,6 +5,8 @@
 #define TCAADDR 0x70
 #define NUM_STRIPS 2
 #define NUM_LEDS_PER_STRIP 60
+#define NUM_LED_BASE 38
+#define NUM_LED_BODY 45
 
 CRGB leds[NUM_STRIPS][NUM_LEDS_PER_STRIP];
 
@@ -17,8 +19,8 @@ void setup() {
   Wire.begin();
   Serial.begin(9600);
 
-  FastLED.addLeds<WS2812, 2, GRB>(leds[0], 38);
-  FastLED.addLeds<WS2812, 3, GRB>(leds[1], 45);
+  FastLED.addLeds<WS2812, 2, GRB>(leds[0], NUM_LED_BASE);
+  FastLED.addLeds<WS2812, 3, GRB>(leds[1], NUM_LED_BODY);
 
   for (int i = 0; i < 256; i++) {
     float x = i;
